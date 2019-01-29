@@ -28,9 +28,24 @@ int main (int argc, char * argv[]) {
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
 	
 	// THE REAL PROGRAM IS HERE
-    cout << my_rank << endl;
+    	// cout << my_rank << endl;
 	
 	// Two Rings
+	
+	char * evens = message;
+	sprintf(message, "Evens");
+	char * odds = message;
+	sprintf(message, "Odds");
+	
+	if (my_rank == 0 || my_rank == 1) {
+		// send the messages and then recieve them
+	}
+	else if (my_rank+2 <= p){
+		// recieve the message then send to my_rank+2
+	}
+	else {
+		// recieve the message then send to 1 or 0
+	}
 	
 	// Whack-an-Orc
 	
