@@ -48,8 +48,8 @@ int main (int argc, char * argv[]) {
 			MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank + 2, tag, MPI_COMM_WORLD);
 		else 
 			MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank % 2, tag, MPI_COMM_WORLD);
-	} else
-	{
+	} 
+	else {
 		cout << message << my_rank << endl;
 	}
 	
@@ -58,7 +58,7 @@ int main (int argc, char * argv[]) {
 	// Whack-an-Orc
 	
 	// In Your EYE
-	
+
 	// Shut down MPI
 	MPI_Finalize();
 
