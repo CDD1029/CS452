@@ -35,13 +35,14 @@ int main (int argc, char * argv[]) {
 	if (my_rank == 0 || my_rank == 1) {
 		// the initial messages are sent
 		if (my_rank == 0) 
-			sprintf(message, "Evens");
+			sprintf(message, "Evens ");
 		else
-			sprintf(message, "Odds");
+			sprintf(message, "Odds ");
 		MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank + 2, tag, MPI_COMM_WORLD);
 	}
 	// everyone has got to recieve the message
 	MPI_Recv(message, 100, MPI_CHAR, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, &status);
+	cout << message << my_rank << endl;
 	if (my_rank >1) {
 		// if you're not the originator then you have to send it to the next processor
 		if (my_rank+2 <= p)
