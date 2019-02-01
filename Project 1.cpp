@@ -45,11 +45,15 @@ int main (int argc, char * argv[]) {
 	cout << message << my_rank << endl;
 	if (my_rank >1) {
 		// if you're not the originator then you have to send it to the next processor
-		if (my_rank+2 <= p)
+		if (my_rank+2 < p)
 			MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank + 2, tag, MPI_COMM_WORLD);
 		else 
 			MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank % 2, tag, MPI_COMM_WORLD);
+	} else
+	{
+		cout << message << my_rank << endl;
 	}
+	
 	
 	
 	// Whack-an-Orc
