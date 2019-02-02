@@ -104,19 +104,19 @@ int main (int argc, char * argv[]) {
 	int n = 106;
 	char * letters=new char[n];
 	int * counts=new int[26];
-	int i=1;
+	int i=0;
 	int localn=n/p;
 	if (my_rank==0){
 		ifstream file ("text.txt");
 		if (file.is_open()){
 			while (!file.eof()){
-				file>>letters[i-1];
+				file>>letters[i];
 				i++;
 			}
 			file.close();
 		}
 	}
-	char * localletters= new char[i/p];
+	char * localletters= new char[localn];
 	MPI_Scatter(&letters[0], localn, MPI_CHAR, localletters, localn, MPI_CHAR, 0, MPI_COMM_WORLD);
 	int * localcounts=new int[26];
 	for (int x=0;x<26;x++)
