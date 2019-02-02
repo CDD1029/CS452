@@ -1,6 +1,9 @@
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <fstream>
+#include <time.h>
 #include "mpi.h" // message passing interface
 using namespace std;
 
@@ -31,33 +34,109 @@ int main (int argc, char * argv[]) {
     	// cout << my_rank << endl;
 	
 	// Two Rings
-	
+/*
 	if (my_rank == 0 || my_rank == 1) {
 		// the initial messages are sent
 		if (my_rank == 0) 
-			sprintf(message, "Evens");
+			sprintf(message, "Evens ");
 		else
-			sprintf(message, "Odds");
+			sprintf(message, "Odds ");
 		MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank + 2, tag, MPI_COMM_WORLD);
 	}
 	// everyone has got to recieve the message
 	MPI_Recv(message, 100, MPI_CHAR, MPI_ANY_SOURCE, tag, MPI_COMM_WORLD, &status);
+	cout << message << my_rank << endl;
 	if (my_rank >1) {
 		// if you're not the originator then you have to send it to the next processor
 		if (my_rank+2 < p)
 			MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank + 2, tag, MPI_COMM_WORLD);
 		else 
 			MPI_Send(message, strlen(message)+1, MPI_CHAR, my_rank % 2, tag, MPI_COMM_WORLD);
-	} 
-	else {
-		cout << message << my_rank << endl;
 	}
-	
+*/	
 	
 	
 	// Whack-an-Orc
+/*	
+	srand(1251);
+	int n = 300000;
+	int * orcs = new int[n];
+	long int min=0;
+	long int max=0;
+	long int avg=0;
+
+	if (my_rank==0)
+		for (int x=0; x<n; x++)
+			orcs[x]=rand();
+	int localn=n/p;
+	int * localorcs=new int[localn];
+
+	MPI_Scatter(&orcs[0], localn, MPI_INT, localorcs, localn, MPI_INT, 0, MPI_COMM_WORLD);
 	
+	long int localmin=localorcs[0];
+	for (int x=1; x<localn; x++)
+		if (localmin>localorcs[x])
+			localmin=localorcs[x];
+	MPI_Allreduce(&localmin, &min, 1, MPI_LONG, MPI_MIN, MPI_COMM_WORLD);
+
+	if (my_rank==0)
+		cout << min << endl;
+
+	long int localmax=localorcs[0];
+	for (int x=1;x<localn;x++)
+		if (localmax<localorcs[x])
+			localmax=localorcs[x];
+	MPI_Allreduce(&localmax, &max, 1, MPI_LONG, MPI_MAX, MPI_COMM_WORLD);
+	if (my_rank==0)
+		cout<< max << endl;
+
+	long int localavg=0;
+	for (int x=0; x<localn; x++)
+		localavg+=localorcs[x]/localn;
+	MPI_Allreduce(&localavg, &avg, 1, MPI_LONG, MPI_SUM, MPI_COMM_WORLD);
+	if (my_rank==0)
+		cout<< avg/p << endl;
+	delete [] orcs;
+	delete [] localorcs;
+*/
 	// In Your EYE
+	
+	int n = 106;
+	char * letters=new char[n];
+	int * counts=new int[26];
+	int i=1;
+	int localn=n/p;
+	if (my_rank==0){
+		ifstream file ("text.txt");
+		if (file.is_open()){
+			while (!file.eof()){
+				file>>letters[i-1];
+				i++;
+			}
+			file.close();
+		}
+	}
+	char * localletters= new char[i/p];
+	MPI_Scatter(&letters[0], localn, MPI_CHAR, localletters, localn, MPI_CHAR, 0, MPI_COMM_WORLD);
+	int * localcounts=new int[26];
+	for (int x=0;x<26;x++)
+		localcounts[x]=0;
+	for (int x=0; x<localn; x++){
+		int place=(int)localletters[x];
+		place -= 97;
+		if (place >=0 && place < 26)
+			localcounts[place]++;
+	}
+	for (int x=0;x<26;x++)
+		MPI_Allreduce(&localcounts[x], &counts[x], 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+	if (my_rank==0)
+		for (int x=0; x<26; x++)
+			cout << (char)(x+97) << ":" << counts[x] << endl;
+	
+	delete [] letters;
+	delete [] counts;
+	delete [] localletters;
+	delete [] localcounts;
 
 	// Shut down MPI
 	MPI_Finalize();
