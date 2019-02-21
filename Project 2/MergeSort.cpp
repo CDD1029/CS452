@@ -12,15 +12,17 @@ void mergesort(int * a, int first, int last);
 void merge(int * a, int * b, int first, int last, int middle);
 
 void mergesort(int * a, int first, int last){
-	if (last - first <= 1)
-		return;
-	int * b = new int[last - first];
-	merge(a, b, first, last, first + ( (last - first) / 2 ) );
+	if (last > first){
+		int m = first+(last-first)/2;
+		mergesort(a, first, m);
+		mergesort(a, m, last);
+		int * b = new int[last - first];
+		merge(a, b, first, last, m);
+	}
+	return;
 }
 
 void merge(int * a, int * b, int first, int last, int middle){
-	mergesort(a, first, middle);
-	mergesort(a, middle, last);
 	int firstplace = first;
 	int secondplace = middle;
 	int bplace = 0;
