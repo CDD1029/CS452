@@ -8,6 +8,33 @@ using namespace std;
 // mpicxx -o blah file.cpp
 // mpirun -q -np 32 blah
 
+void mergesort(int * a, int first, int last);
+void merge(int * a, int * b, int first, int last, int middle);
+
+void mergesort(int * a, int first, int last){
+	if (last-first==1)
+		return;
+	int * b = new int[last-first];
+	a = merge(a, b, first, last, first+((last-first)/2));
+}
+
+void merge(int * a, int * b, int first, int last, int middle){
+	mergesort(a, first, middle);
+	mergesort(a, middle, last);
+	int firstplace=first;
+	int secondplace=middle;
+	int bplace=0;
+	while(bplace<last-first){
+		if (a[firstplace] < a[secondplace] || secondplace >= last)
+			b[bplace++]=a[firstplace++];
+		else
+			b[bplace++]=a[secondplace++];
+	}
+	bplace = 0;
+	while (bplace<last-first)
+		a[bplace+first]=b[bplace];
+}
+
 int main (int argc, char * argv[]) {
 
 	int my_rank;			// my CPU number for this process
