@@ -12,9 +12,9 @@ void mergesort(int * a, int first, int last);
 void merge(int * a, int * b, int first, int last, int middle);
 
 void mergesort(int * a, int first, int last){
-	if (last - first == 1)
+	if (last - first <= 1)
 		return;
-	int * b = new int[last-first];
+	int * b = new int[last - first];
 	merge(a, b, first, last, first + ( (last - first) / 2 ) );
 }
 
@@ -24,7 +24,7 @@ void merge(int * a, int * b, int first, int last, int middle){
 	int firstplace = first;
 	int secondplace = middle;
 	int bplace = 0;
-	while(bplace<last-first){
+	while(bplace < last - first){
 		if (a[firstplace] < a[secondplace] || secondplace >= last)
 			b[bplace++] = a[firstplace++];
 		else
@@ -32,7 +32,7 @@ void merge(int * a, int * b, int first, int last, int middle){
 	}
 	bplace = 0;
 	while (bplace < last - first)
-		a[bplace+first] = b[bplace++];
+		a[bplace + first] = b[bplace++];
 }
 
 int main (int argc, char * argv[]) {
