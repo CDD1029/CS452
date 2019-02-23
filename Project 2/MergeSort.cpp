@@ -16,25 +16,33 @@ void mergesort(int * a, int first, int last){
 		int m = first+(last-first)/2;
 		mergesort(a, first, m);
 		mergesort(a, m, last);
-		int * b = new int[last - first];
+		int * b = a[m];
 		merge(a, b, first, last, m);
 	}
 	return;
 }
 
 void merge(int * a, int * b, int first, int last, int middle){
-	int firstplace = first;
-	int secondplace = middle;
+	int aplace = 0;
 	int bplace = 0;
-	while(bplace < last - first){
-		if (a[firstplace] < a[secondplace] || secondplace >= last)
-			b[bplace++] = a[firstplace++];
-		else
-			b[bplace++] = a[secondplace++];
+	while (aplace<middle && bplace<last-middle){
+		if (a[aplace] <= b[bplace])
+			aplace++;
+		else {
+			int value = b[bplace];
+			int index = bplace + middle;
+			
+			while (index!=aplace){
+				a[index] = a[index - 1]; 
+                		index--;
+			}
+			a[aplace] = value;
+			
+			aplace++;
+			bplace++;
+			middle++;
+		}
 	}
-	bplace = 0;
-	while (bplace < last - first)
-		a[bplace + first] = b[bplace++];
 }
 
 int main (int argc, char * argv[]) {
