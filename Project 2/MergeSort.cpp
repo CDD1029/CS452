@@ -14,7 +14,7 @@ void mergesort(int * a, int first, int last);
 void merge(int * a, int * b, int first, int last, int middle);
 
 void mergesort(int * a, int first, int last){
-	if (last > first){
+	if (last > first+1){
 		cout << first << ":" << last << endl;
 		int m = first+(last-first)/2;
 		mergesort(a, first, m);
