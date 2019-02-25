@@ -29,10 +29,10 @@ void merge(int * a, int * b, int first, int last, int middle){
 	int aplace = 0;
 	int bplace = middle;
 	while (aplace<middle && bplace<last){
-		if (a[aplace] <= b[bplace])
+		if (a[aplace] <= a[bplace])
 			aplace++;
 		else {
-			int value = b[bplace];
+			int value = a[bplace];
 			int index = bplace + middle;
 			
 			while (index!=aplace){
