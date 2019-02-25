@@ -26,7 +26,7 @@ void mergesort(int * a, int first, int last){
 }
 
 void merge(int * a, int * b, int first, int last, int middle){
-	int aplace = 0;
+	int aplace = first;
 	int bplace = middle;
 	while (aplace<middle && bplace<last){
 		if (a[aplace] <= a[bplace])
