@@ -67,12 +67,22 @@ int main (int argc, char * argv[]) {
 	// THE REAL PROGRAM IS HERE
 	
 	if (my_rank==0){
+		srand(1231);
 		int arraysize=0;
 		cout << "Enter size of array:" << endl;
 		cin >> arraysize;
 		int * array = new int[arraysize];
-		mergesort(array, 0, arraysize);
 		
+		for (int i=0; i<arraysize; i++){
+			array[i]=rand()%10;
+		}
+		cout<< "Unsorted:"<<endl;
+		for (int i=0; i < arraysize; i++){
+			cout<< array[i] << endl;
+		}
+		
+		mergesort(array, 0, arraysize);
+		cout<< "Sorted:"<<endl;
 		for (int i=0; i < arraysize; i++){
 			cout<< array[i] << endl;
 		}
