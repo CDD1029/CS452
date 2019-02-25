@@ -15,14 +15,12 @@ void merge(int * a, int * b, int first, int last, int middle);
 
 void mergesort(int * a, int first, int last){
 	if (last > first){
+		cout << first << ":" << last << endl;
 		int m = first+(last-first)/2;
 		mergesort(a, first, m);
-		cout << "mergesorted left"<< endl;
 		mergesort(a, m, last);
-		cout << "mergesorted right"<< endl;
 		int * b = a;
 		merge(a, b, first, last, m);
-		cout << "merged "<< first << last << endl;
 	}
 	return;
 }
