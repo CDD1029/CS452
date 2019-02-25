@@ -33,7 +33,7 @@ void merge(int * a, int * b, int first, int last, int middle){
 			aplace++;
 		else {
 			int value = a[bplace];
-			int index = bplace + middle;
+			int index = bplace;
 			
 			while (index!=aplace){
 				a[index] = a[index - 1]; 
