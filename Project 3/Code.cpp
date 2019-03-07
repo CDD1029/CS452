@@ -32,10 +32,12 @@ void smerge(int * a, int first1, int last1, int first2, int last2){
 
 int rank(int * a, int first, int last, int valtofind){
 	int m = first + (last - first) / 2;
-	if (a[m] > valtofind)
-		return rank(a, m, last, valtofind);
-	if (a[m] < valtofind)
-		return rank(a, first, m, valtofind);
+	if (first > last){
+		if (a[m] > valtofind)
+			return rank(a, m, last, valtofind);
+		if (a[m] < valtofind)
+			return rank(a, first, m, valtofind);
+	}
 	return m;
 }
 
