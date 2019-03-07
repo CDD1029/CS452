@@ -16,7 +16,7 @@ int rank(int * a, int first, int last, int valtofind);
 void pmerge(int * a, int first, int last, int mid);
 
 void mergesort(int * a, int first, int last){
-	if (last > first+1){
+	if (last > first + 1){
 		cout << first << ":" << last << endl;
 		int m = first + (last - first) / 2;
 		mergesort(a, first, m);
@@ -27,12 +27,33 @@ void mergesort(int * a, int first, int last){
 }
 
 void smerge(int * a, int first1, int last1, int first2, int last2){
-	return;
+	int * left = &a[first1];
+	int leftsize = last1 - first1;
+	int * right = &a[first2];
+	int rightsize = last2 - first2;
+	int mergedsize = leftsize + rightsize;
+	int * merged = new int[mergedsize];
+	int leftindex = 0;
+	int rightindex = 0;
+	int mergedindex = 0;
+	while (mergedindex < mergedsize){
+		while (rightindex < rightsize){
+			while (leftindex<leftsize){
+				if (left[leftindex] <= right[rightindex])
+					merged[mergedindex++]=left[leftindex++];
+				else
+					merged[mergedindex++]=right[rightindex++];
+			}
+			merged[mergedindex++]=right[rightindex++];
+		}
+		merged[mergedindex++]=left[leftindex++];
+	}
+	
 }
 
 int rank(int * a, int first, int last, int valtofind){
 	int m = first + (last - first) / 2;
-	if (first > last){
+	if (last > first + 1){
 		if (a[m] > valtofind)
 			return rank(a, m, last, valtofind);
 		if (a[m] < valtofind)
