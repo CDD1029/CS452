@@ -38,32 +38,33 @@ void smerge(int * a, int first1, int last1, int first2, int last2){
 	int mergedindex = 0;
 	while (mergedindex < mergedsize){
 		while (rightindex < rightsize){
-			while (leftindex<leftsize){
+			while (leftindex < leftsize){
 				if (left[leftindex] <= right[rightindex])
-					merged[mergedindex++]=left[leftindex++];
+					merged[mergedindex++] = left[leftindex++];
 				else
-					merged[mergedindex++]=right[rightindex++];
+					merged[mergedindex++] = right[rightindex++];
 			}
-			merged[mergedindex++]=right[rightindex++];
+			merged[mergedindex++] = right[rightindex++];
 		}
-		merged[mergedindex++]=left[leftindex++];
+		merged[mergedindex++] = left[leftindex++];
 	}
 	
 }
 
 int rank(int * a, int first, int last, int valtofind){
+	if (first==last)
+		return first;
 	int m = first + (last - first) / 2;
-	if (last > first + 1){
-		if (a[m] > valtofind)
-			return rank(a, m, last, valtofind);
-		if (a[m] < valtofind)
-			return rank(a, first, m, valtofind);
-	}
-	return m;
+	if (a[m]==valtofind)
+		return m;
+	if (a[m] > valtofind)
+		return rank(a, m+1, last, valtofind);
+	return rank(a, first, m, valtofind);
+	
 }
 
 void pmerge(int * a, int first, int last, int mid){
-	return;
+	smerge(a, first, mid, mid, last);
 }
 
 int main (int argc, char * argv[]) {
@@ -95,7 +96,8 @@ int main (int argc, char * argv[]) {
 		int * array = new int[arraysize];
 		
 		for (int i=0; i<arraysize; i++){
-			array[i]=rand()%10;
+			array[i]= arraysize - i;
+			// rand()%100
 		}
 		cout<< "Unsorted:"<<endl;
 		for (int i=0; i < arraysize; i++){
