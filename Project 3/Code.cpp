@@ -11,41 +11,36 @@ using namespace std;
 // mpirun -q -np 32 blah
 
 void mergesort(int * a, int first, int last);
-void merge(int * a, int * b, int first, int last, int middle);
+void smerge(int * a, int first1, int last1, int first2, int last2);
+int rank(int * a, int first, int last, int valtofind);
+void pmerge(int * a, int first, int last, int mid);
 
 void mergesort(int * a, int first, int last){
 	if (last > first+1){
 		cout << first << ":" << last << endl;
-		int m = first+(last-first)/2;
+		int m = first + (last - first) / 2;
 		mergesort(a, first, m);
 		mergesort(a, m, last);
-		int * b = a;
-		merge(a, b, first, last, m);
+		pmerge(a, first, last, mid);
 	}
 	return;
 }
 
-void merge(int * a, int * b, int first, int last, int middle){
-	int aplace = first;
-	int bplace = middle;
-	while (aplace<middle && bplace<last){
-		if (a[aplace] <= a[bplace])
-			aplace++;
-		else {
-			int value = a[bplace];
-			int index = bplace;
-			
-			while (index>=aplace){
-				a[index] = a[index - 1]; 
-                		index--;
-			}
-			a[aplace] = value;
-			
-			aplace++;
-			bplace++;
-			middle++;
-		}
-	}
+void smerge(int * a, int first1, int last1, int first2, int last2){
+	return;
+}
+
+int rank(int * a, int first, int last, int valtofind){
+	int m = first + (last - first) / 2;
+	if (a[m] > valtofind)
+		return rank(a, m, last, valtofind);
+	if (a[m] < valtofind)
+		return rank(a, first, m, valtofind);
+	return m;
+}
+
+void pmerge(int * a, int first, int last, int mid){
+	return;
 }
 
 int main (int argc, char * argv[]) {
