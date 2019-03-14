@@ -27,6 +27,14 @@ void mergesort(int * a, int first, int last, int * sorted){
 }
 
 void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted){
+	if(first1>last1){
+		smerge(a,last1,first1,first2,last2,sorted);
+		return;
+	}
+	if(first2>last2){
+		smerge(a,first1,last1,last2,first2,sorted);
+		return;
+	}
 	int * left = &a[first1];
 	int leftsize = last1 - first1;
 	int * right = &a[first2];
@@ -64,8 +72,23 @@ int rank(int * a, int first, int last, int valtofind){
 }
 
 void pmerge(int * a, int first, int last, int mid, int * sorted){
-	int n = last - first;
-	int numberofrankstocalculate = (int) n/log(n);
+	int * left = &a[first];
+	int * right = &a[mid];
+	int leftsize = mid - first;
+	int rightsize = last - mid;
+	int * leftranks = new int[leftsize/log(leftsize)];
+	int * rightranks = new int[rightsize/log(rightsize)];
+	int leftindex = 0;
+	int rightindex = 0;
+	while(leftindex<leftsize){
+		leftranks[leftindex/log(leftsize)]=rank(right, 0, rightsize, left[leftindex]);
+		leftindex+=log(leftsize);
+	}
+	while(rightindex<rightsize){
+		rightranks[rightindex/log(rightsize)]=rank(left, 0, leftsize, right[rightindex]);
+		rightindex+=log(rightsize);
+	}
+	// TODO: find out how to get the numbers for beginning and end of shapes
 }
 
 int main (int argc, char * argv[]) {
