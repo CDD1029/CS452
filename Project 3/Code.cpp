@@ -22,23 +22,29 @@ void mergesort(int * a, int first, int last, int * sorted){
 		int m = first + (last - first) / 2;
 		mergesort(&a[first], 0, m, &sorted[first]);
 		mergesort(&a[m], 0, last-m, &sorted[m]);
+		int index = first;
+		while (index < last)
+			a[index]=sorted[index];
 		pmerge(a, first, last, m, sorted);
+		index = first;
+		while (index < last)
+			a[index]=sorted[index];
 	}
 }
 
 void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted){
-	if(first1>last1){
+	if (first1>last1){
 		smerge(a,last1,first1,first2,last2,sorted);
 		return;
 	}
-	if(first2>last2){
+	if (first2>last2){
 		smerge(a,first1,last1,last2,first2,sorted);
 		return;
 	}
 	int * left = &a[first1];
-	int leftsize = last1 - first1;
 	int * right = &a[first2];
-	int rightsize = last2 - first2;
+	int leftsize = last1-first1;
+	int rightsize = last2-first2;
 	int leftindex = 0;
 	int rightindex = 0;
 	int sortedindex = 0;
@@ -49,7 +55,7 @@ void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted)
 	}
 	while (leftindex<leftsize)
 		sorted[sortedindex++]=left[leftindex++];
-	while (right[rightindex])
+	while (rightindex<rightsize)
 		sorted[sortedindex++]=right[rightindex++];
 }
 
@@ -76,19 +82,38 @@ void pmerge(int * a, int first, int last, int mid, int * sorted){
 	int * right = &a[mid];
 	int leftsize = mid - first;
 	int rightsize = last - mid;
-	int * leftranks = new int[leftsize/log(leftsize)];
-	int * rightranks = new int[rightsize/log(rightsize)];
+	int leftchunk = log(leftsize);
+	int rightchunk = log(rightsize);
+	int lranksize = leftsize/leftchunk
+	int * leftranks = new int[lranksize];
+	int rranksize = rightsize/rightchunk
+	int * rightranks = new int[rranksize];
 	int leftindex = 0;
 	int rightindex = 0;
-	while(leftindex<leftsize){
-		leftranks[leftindex/log(leftsize)]=rank(right, 0, rightsize, left[leftindex]);
-		leftindex+=log(leftsize);
+	while(leftindex<lranksize){
+		leftranks[leftindex]=rank(right, 0, rightsize, left[leftindex*leftchunk])+(leftindex*leftchunk);
+		leftindex++;
 	}
-	while(rightindex<rightsize){
-		rightranks[rightindex/log(rightsize)]=rank(left, 0, leftsize, right[rightindex]);
-		rightindex+=log(rightsize);
+	while(rightindex<rranksize){
+		rightranks[rightindex]=rank(left, 0, leftsize, right[rightindex*rightchunk])+(rightindex*rightchunk);
+		rightindex++;
 	}
-	// TODO: find out how to get the numbers for beginning and end of shapes
+	leftindex=0;
+	rightindex=0;
+	while(leftindex<lranksize&&rightindex<rranksize){
+		int first1=leftindex*leftchunk;
+		int first2=rightindex*rightchunk;
+		int last1=rightranks[rightindex]-first2;
+		int last2=leftranks[leftindex]-first1;
+		if (leftranks[leftindex]<rightranks[rightindex]){
+			smerge(a, first1, last1, first2+mid, last2+mid, &sorted[leftranks[leftindex]]);
+			leftindex++;
+		}
+		else{
+			smerge(a, first1, last1, first2+mid, last2+mid, &sorted[rightranks[rightindex]]);
+			rightindex++;
+		}
+	}
 }
 
 int main (int argc, char * argv[]) {
