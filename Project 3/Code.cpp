@@ -10,61 +10,57 @@ using namespace std;
 // mpicxx -o blah file.cpp
 // mpirun -q -np 32 blah
 
-void mergesort(int * a, int first, int last);
-void smerge(int * a, int first1, int last1, int first2, int last2);
+void mergesort(int * a, int first, int last, int * sorted);
+void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted);
 int rank(int * a, int first, int last, int valtofind);
-void pmerge(int * a, int first, int last, int mid);
+void pmerge(int * a, int first, int last, int mid, int * sorted);
 
-void mergesort(int * a, int first, int last){
+void mergesort(int * a, int first, int last, int * sorted){
 	if (last > first + 1){
 		cout << first << ":" << last << endl;
 		int m = first + (last - first) / 2;
-		mergesort(a, first, m);
-		mergesort(a, m, last);
-		pmerge(a, first, last, mid);
+		mergesort(&a[first], 0, m, &sorted[first]);
+		mergesort(&a[m], 0, last-m, &sorted[m]);
+		pmerge(a, first, last, m, sorted);
 	}
-	return;
 }
 
-void smerge(int * a, int first1, int last1, int first2, int last2){
+void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted){
 	int * left = &a[first1];
 	int leftsize = last1 - first1;
 	int * right = &a[first2];
 	int rightsize = last2 - first2;
-	int mergedsize = leftsize + rightsize;
-	int * merged = new int[mergedsize];
+	int sortedsize = leftsize + rightsize;
 	int leftindex = 0;
 	int rightindex = 0;
-	int mergedindex = 0;
-	while (mergedindex < mergedsize){
-		while (rightindex < rightsize){
-			while (leftindex < leftsize){
-				if (left[leftindex] <= right[rightindex])
-					merged[mergedindex++] = left[leftindex++];
-				else
-					merged[mergedindex++] = right[rightindex++];
-			}
-			merged[mergedindex++] = right[rightindex++];
-		}
-		merged[mergedindex++] = left[leftindex++];
+	int sortedindex = 0;
+	while (rightindex<rightsize&&leftindex<leftsize){
+		if (right[rightindex]<=left[leftindex])
+			sorted[sortedindex++]=right[rightindex++];
+		sorted[sortedindex++]=left[leftindex++];
 	}
-	
+	while (leftindex<leftsize)
+		sorted[sortedindex++]=left[leftindex++];
+	while (right[rightindex])
+		sorted[sortedindex++]=right[rightindex++];
 }
 
 int rank(int * a, int first, int last, int valtofind){
-	if (first==last)
-		return first;
-	int m = first + (last - first) / 2;
-	if (a[m]==valtofind)
-		return m;
-	if (a[m] > valtofind)
+	if (first + 1 == last){
+		if (a[first]>=valtofind)
+			return first;
+		return last;
+	}
+	int m = first + (last-first)/2);
+	if (a[m]<valtofind)
+		return rank(a, first, m, valtofind);
+	if (a[m]>valtofind)
 		return rank(a, m+1, last, valtofind);
-	return rank(a, first, m, valtofind);
-	
+	return m;
 }
 
-void pmerge(int * a, int first, int last, int mid){
-	smerge(a, first, mid, mid, last);
+void pmerge(int * a, int first, int last, int mid, int * sorted){
+	smerge(a, first, mid, mid, last, sorted);
 }
 
 int main (int argc, char * argv[]) {
@@ -94,7 +90,7 @@ int main (int argc, char * argv[]) {
 		cout << "Enter size of array:" << endl;
 		cin >> arraysize;
 		int * array = new int[arraysize];
-		
+		int * sorted = new int[arraysize];
 		for (int i=0; i<arraysize; i++){
 			array[i]= arraysize - i;
 			// rand()%100
@@ -104,7 +100,7 @@ int main (int argc, char * argv[]) {
 			cout<< array[i] << endl;
 		}
 		
-		mergesort(array, 0, arraysize);
+		mergesort(array, 0, arraysize, sorted);
 		cout<< "Sorted:"<<endl;
 		for (int i=0; i < arraysize; i++){
 			cout<< array[i] << endl;
