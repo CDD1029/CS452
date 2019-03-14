@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <bits/stdc++.h>
 #include "mpi.h" // message passing interface
 using namespace std;
 
@@ -46,6 +47,10 @@ void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted)
 }
 
 int rank(int * a, int first, int last, int valtofind){
+	if(first==last)
+		return first;
+	if (first>last)
+		return rank(a, last, first, valtofind);
 	if (first + 1 == last){
 		if (a[first]>=valtofind)
 			return first;
@@ -60,7 +65,8 @@ int rank(int * a, int first, int last, int valtofind){
 }
 
 void pmerge(int * a, int first, int last, int mid, int * sorted){
-	smerge(a, first, mid, mid, last, sorted);
+	int n = last - first;
+	int numberofrankstocalculate = (int) n/log(n);
 }
 
 int main (int argc, char * argv[]) {
