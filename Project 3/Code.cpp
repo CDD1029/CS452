@@ -91,29 +91,14 @@ void pmerge(int * a, int first, int last, int mid, int * sorted){
 	int leftindex = 0;
 	int rightindex = 0;
 	while(leftindex<lranksize){
-		leftranks[leftindex]=rank(right, 0, rightsize, left[leftindex*leftchunk])+(leftindex*leftchunk);
+		leftranks[leftindex]=rank(right, 0, rightsize, left[leftindex*leftchunk]);
 		leftindex++;
 	}
 	while(rightindex<rranksize){
-		rightranks[rightindex]=rank(left, 0, leftsize, right[rightindex*rightchunk])+(rightindex*rightchunk);
+		rightranks[rightindex]=rank(left, 0, leftsize, right[rightindex*rightchunk]);
 		rightindex++;
 	}
-	leftindex=0;
-	rightindex=0;
-	while(leftindex<lranksize&&rightindex<rranksize){
-		int first1=leftindex*leftchunk;
-		int first2=rightindex*rightchunk;
-		int last1=rightranks[rightindex]-first2;
-		int last2=leftranks[leftindex]-first1;
-		if (leftranks[leftindex]<rightranks[rightindex]){
-			smerge(a, first1, last1, first2+mid, last2+mid, &sorted[leftranks[leftindex]]);
-			leftindex++;
-		}
-		else{
-			smerge(a, first1, last1, first2+mid, last2+mid, &sorted[rightranks[rightindex]]);
-			rightindex++;
-		}
-	}
+	// There is a pic on Brianna's phone of what to do here but we all good bois
 }
 
 int main (int argc, char * argv[]) {
