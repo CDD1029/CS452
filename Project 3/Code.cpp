@@ -31,7 +31,6 @@ void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted)
 	int leftsize = last1 - first1;
 	int * right = &a[first2];
 	int rightsize = last2 - first2;
-	int sortedsize = leftsize + rightsize;
 	int leftindex = 0;
 	int rightindex = 0;
 	int sortedindex = 0;
