@@ -10,17 +10,21 @@ using namespace std;
 // New compile and run commands for MPI!
 // mpicxx -o blah file.cpp
 // mpirun -q -np 32 blah
-
+int calcMid(int first, int last);
 void mergesort(int * a, int first, int last, int * sorted);
 void smerge(int * a, int first1, int last1, int first2, int last2, int * sorted);
 int rank(int * a, int first, int last, int valtofind);
 void pmerge(int * a, int first, int last, int mid, int * sorted);
 
-void mergesort(int * a, int first, int last, int * sorted){
+int calcMid(int first, int last){
+	return first + (last - first) / 2;
+}
+
+void mergesort(int * a, int first, int last, int * sorted){ // works up to last, not including last index
 	if (last > first + 1){
 		cout << first << ":" << last << endl;
-		int m = first + (last - first) / 2;
-		mergesort(&a[first], 0, m, &sorted[first]);
+		int m = calcMid(first,last);
+		mergesort(&a[first], 0, m, &sorted[first]); 
 		mergesort(&a[m], 0, last-m, &sorted[m]);
 		pmerge(a, first, last, m, sorted);
 	}
@@ -76,42 +80,23 @@ int main (int argc, char * argv[]) {
 	int dest;				// rank of destination
 	int tag = 0;			// message number
 	char message[100];		// message itself
+	const int root = 0;
 	MPI_Status status;		// return status for receive
-	
-	// Start MPI
 	MPI_Init(&argc, &argv);
-	
-	// Find out my rank!
 	MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
-	
-	// Find out the number of processes!
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
+	int arraysize;
 	
-	// THE REAL PROGRAM IS HERE
-	
-	if (my_rank==0){
-		srand(1231);
-		int arraysize=0;
-		cout << "Enter size of array:" << endl;
-		cin >> arraysize;
-		int * array = new int[arraysize];
-		int * sorted = new int[arraysize];
-		for (int i=0; i<arraysize; i++){
-			array[i]= arraysize - i;
-			// rand()%100
-		}
-		cout<< "Unsorted:"<<endl;
-		for (int i=0; i < arraysize; i++){
-			cout<< array[i] << endl;
-		}
-		
-		mergesort(array, 0, arraysize, sorted);
-		cout<< "Sorted:"<<endl;
-		for (int i=0; i < arraysize; i++){
-			cout<< array[i] << endl;
-		}
+	if(my_rank == root) {
+		arraysize = 5;
 	}
-	
+	MPI_Bcast(&arraysize, 1, MPI_INT, root, MPI_COMM_WORLD);
+	int * array = new int[arraysize];
+	int * sorted = new int[arraysize]; // destination array
+	if (my_rank==root)
+		for (int i=0; i<arraysize; i++)
+			array[i]= arraysize - i;
+	MPI_Bcast(array, arraysize, MPI_INT, root, MPI_COMM_WORLD);
 	// Shut down MPI
 	MPI_Finalize();
 
